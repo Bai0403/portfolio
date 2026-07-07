@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>白怡萌 — 作品集</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#1a1a1a;font-family:-apple-system,"Helvetica Neue","PingFang SC",sans-serif;overflow-x:hidden}
+.slider{position:fixed;top:0;left:0;right:0;height:3px;background:#333;z-index:100}
+.slider-bar{height:100%;background:#c9a96e;width:0%;transition:width .1s linear}
+.nav{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);z-index:100;display:flex;align-items:center;gap:20px;background:rgba(0,0,0,.7);backdrop-filter:blur(12px);padding:10px 24px;border-radius:30px;border:1px solid rgba(255,255,255,.08)}
+.nav button{background:none;border:none;color:#fff;font-size:18px;cursor:pointer;padding:6px 12px;border-radius:6px;transition:all .3s;opacity:.6}
+.nav button:hover{opacity:1;background:rgba(255,255,255,.08)}
+.nav .page-info{color:rgba(255,255,255,.5);font-size:13px;letter-spacing:1px;min-width:60px;text-align:center}
+.slide-container{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;position:relative}
+.slide{width:88vw;max-width:1200px;height:auto;aspect-ratio:16/9;background:#f5f5f1;border-radius:4px;overflow:hidden;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.slide img{width:100%;height:100%;object-fit:contain;display:block}
+.slide-content{position:absolute;inset:0;padding:5%;display:flex;flex-direction:column;justify-content:center}
+.slide-content .title{font-size:clamp(20px,3vw,42px);font-weight:300;color:#111;letter-spacing:-1px;margin-bottom:8px}
+.slide-content .sub{font-size:clamp(11px,1.2vw,16px);color:#888;letter-spacing:2px;margin-bottom:20px}
+.slide-content .text{font-size:clamp(12px,1.3vw,17px);color:#555;line-height:1.8;max-width:70%}
+.slide-content .text strong{color:#111}
+.slide-content .gold{color:#c9a96e;font-size:clamp(10px,1vw,14px);letter-spacing:2px;font-weight:600;margin-bottom:6px}
+@media(max-width:768px){
+  .nav{bottom:16px;padding:8px 16px;gap:12px}
+  .slide{width:95vw}
+  .slide-content .text{max-width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="slider"><div class="slider-bar" id="progressBar"></div></div>
+
+<div class="slide-container" id="slideContainer">
+  <div class="slide" id="slide">
+    <img id="slideImage" src="" alt="">
+  </div>
+</div>
+
+<div class="nav">
+  <button id="prevBtn">&#8592;</button>
+  <span class="page-info" id="pageInfo">1 / 9</span>
+  <button id="nextBtn">&#8594;</button>
+</div>
+
+<script>
+const slides = [
+  { image: "ppt_web/slide_01.jpg" },
+  { image: "ppt_web/slide_02.jpg" },
+  { image: "ppt_web/slide_03.jpg" },
+  { image: "ppt_web/slide_04.jpg" },
+  { image: "ppt_web/slide_05.jpg" },
+  { image: "ppt_web/slide_06.jpg" },
+  { image: "ppt_web/slide_07.jpg" },
+  { image: "ppt_web/slide_08.jpg" },
+  { image: "ppt_web/slide_09.jpg" }
+];
+
+let current = 0;
+const img = document.getElementById('slideImage');
+const info = document.getElementById('pageInfo');
+const bar = document.getElementById('progressBar');
+
+function showSlide(idx) {
+  current = (idx + slides.length) % slides.length;
+  img.src = slides[current].image;
+  info.textContent = (current + 1) + ' / ' + slides.length;
+  bar.style.width = ((current + 1) / slides.length * 100) + '%';
+}
+
+document.getElementById('prevBtn').onclick = () => showSlide(current - 1);
+document.getElementById('nextBtn').onclick = () => showSlide(current + 1);
+document.addEventListener('keydown', e => {
+  if(e.key === 'ArrowLeft') showSlide(current - 1);
+  if(e.key === 'ArrowRight') showSlide(current + 1);
+});
+
+// Touch support
+let touchX = 0;
+document.addEventListener('touchstart', e => touchX = e.touches[0].clientX);
+document.addEventListener('touchend', e => {
+  const diff = touchX - e.changedTouches[0].clientX;
+  if(Math.abs(diff) > 50) showSlide(current + (diff > 0 ? 1 : -1));
+});
+
+showSlide(0);
+</script>
+</body>
+</html>
